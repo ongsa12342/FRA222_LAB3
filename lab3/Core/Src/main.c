@@ -49,7 +49,7 @@ UART_HandleTypeDef huart2;
 uint16_t dutypercent = 50 ,MotorControlEnable;
 
 int32_t InputCaptureBuffer[IC_BUFFER_SIZE];
-float MotorReadRPM,MotorSetRPM = 0.006;
+float MotorReadRPM,MotorSetRPM;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,9 +118,9 @@ HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, InputCaptureBuffer, IC_BUFFER_SIZE);
 	  if(HAL_GetTick() >= timestamp)
 	  {
 		  timestamp += 500;
-		  if( 0.00196 < MotorSetRPM && MotorSetRPM < 0.0075 && MotorControlEnable)
+		  if( 7 < MotorSetRPM && MotorSetRPM <= 26 && MotorControlEnable)
 		  {
-			  dutypercent = (log(0.0075-MotorSetRPM)+4.7129)/(-0.044);
+			  dutypercent = (log(26-MotorSetRPM)-3.476)/(-0.044);
 		  }
 		  else if(MotorControlEnable)
 		  {
@@ -131,7 +131,7 @@ HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, InputCaptureBuffer, IC_BUFFER_SIZE);
 
 
 	  }
-	  MotorReadRPM = 1000000/(60*12*64*IC_Calc_Period());
+	  MotorReadRPM = 1000000*60/(12*64*IC_Calc_Period());
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
